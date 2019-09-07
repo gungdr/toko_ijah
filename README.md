@@ -28,6 +28,16 @@ Optionnal features:
 1. import data from CSV/spreadsheet (data migration)
 2. CMS UI for inventory management
 
+### Assumptions
+
+1. The **SKU** is a combination of product attributes such as store code `SSI-`,brand code `DXXXXX-`, size code `MM-`, and color code `RED`
+2. **ID pesanan** is combination of sales prefix code `ID-`, date `YYYYMMDD-`, and running number `531154`
+3. There are processes such as Purchase order, Receive order, and Sales.
+4. The **Nomer Kwitansi** is not mandatory when receiving purchase order.
+5. In Stock product is available after the Receipt order process.
+6. Purchase order can be completed with one to several receipt order.
+7. Out stock will be counted from sales
+
 ## Stack
 
 This application is use golang and sqlite.
