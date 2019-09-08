@@ -20,6 +20,43 @@ func NewReportRepository(db *sqlx.DB, prefix string) repository.ReportRepository
 	}
 }
 
+func (repo *reportRepository) GetProductValueReport() ([]*models.ProductValueReport, error) {
+	query := `
+		select
+		vw_product.sku,
+		vw_product.name as product_name,
+		count(stock.product_id) as qty,
+		po.price as avg_price,
+		count(stock.product_id) * po.price as total
+		from stock
+		inner join vw_product
+		on vw_product.id = stock.product_id
+		inner join (
+			select 
+			purchase_order_detail.product_id,
+			avg(purchase_order_detail.price) as price
+			from purchase_order_detail
+			group by
+			purchase_order_detail.product_id
+		)po
+		on po.product_id = stock.product_id
+
+		WHERE stock.id not in (
+			SELECT 
+			stock.id
+			from stock
+			inner join sales_detail
+			on sales_detail.stock_id = stock.id
+		)
+
+		GROUP by stock.product_id
+	`
+
+	var report []*models.ProductValueReport
+	err := repo.db.Select(&report, query)
+	return report, err
+}
+
 func (repo *reportRepository) GetTotalProductReport() ([]*models.TotalProductReport, error) {
 	query := `
 			select

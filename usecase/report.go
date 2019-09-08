@@ -7,4 +7,5 @@ type ReportUseCase interface {
 	GetInStockReport() []*models.InStockReport
 	GetOutStockReport() []*models.OutStockReport
 	GetTotalProductReport() []*models.TotalProductReport
+	GetProductValueReport() *models.ProductValueReportSummary
 }

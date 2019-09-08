@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"log"
+	"time"
 	"toko_ijah/models"
 	"toko_ijah/repository"
 	"toko_ijah/usecase"
@@ -40,4 +41,31 @@ func (useCase *reportUseCase) GetTotalProductReport() []*models.TotalProductRepo
 		log.Println(err)
 	}
 	return report
+}
+
+func (useCase *reportUseCase) GetProductValueReport() *models.ProductValueReportSummary {
+	report, err := useCase.repo.GetProductValueReport()
+	type summaryMap struct {
+		qty   int
+		value float32
+	}
+	skuCount := map[string]bool{}
+	qty := 0
+	value := float32(0)
+	for _, row := range report {
+		qty = qty + row.Qty
+		value = value + row.Total
+		skuCount[row.SKU] = true
+	}
+	summary := &models.ProductValueReportSummary{
+		PrintedDate: time.Now(),
+		SKUCount:    len(skuCount),
+		TotalQty:    qty,
+		TotalValue:  value,
+		Detail:      report,
+	}
+	if err != nil {
+		log.Println(err)
+	}
+	return summary
 }
