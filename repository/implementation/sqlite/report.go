@@ -135,26 +135,9 @@ func (repo *reportRepository) GetTotalProductReport() ([]*models.TotalProductRep
 
 func (repo *reportRepository) GetOutStockReport() ([]*models.OutStockReport, error) {
 	query := `
-		select 
-		sales.date as "time",
-		prod.sku,
-		prod.name as product_name,
-		count(stock.product_id) as qty,
-		avg(sales_detail.price) over(PARTITION by sales.id,sales.date) as price,
-		sum(sales_detail.price) as total,
-		'ID-'|| STRFTIME('%Y%m%d',sales.date) ||'-'||  sales.id as notes
-		from sales_detail
-		
-		inner JOIN sales
-		on sales.id = sales_detail.sales_id
-		inner join stock
-		on stock.id = sales_detail.stock_id
+	SELECT time, sku, product_name, qty, price, total, notes
+	FROM vw_out_stock_report
 
-		INNER join vw_product prod prod
-		on prod.id = stock.product_id
-		group BY
-		sales.id,
-		sales.date
 	`
 	var report []*models.OutStockReport
 	err := repo.db.Select(&report, query)
