@@ -57,24 +57,13 @@ func (repo *reportRepository) GetOutStockReport() ([]*models.OutStockReport, err
 		sum(sales_detail.price) as total,
 		'ID-'|| STRFTIME('%Y%m%d',sales.date) ||'-'||  sales.id as notes
 		from sales_detail
+		
 		inner JOIN sales
 		on sales.id = sales_detail.sales_id
 		inner join stock
 		on stock.id = sales_detail.stock_id
 
-		INNER join (
-			SELECT 
-			product.id,
-			'` + repo.prefix + `-' || brand.code || product.id || '-' || "size".code || '-' || color.code as sku,
-			brand.name ||' '|| product.name ||' ('|| "size".name ||', '|| color.name || ')' as name
-			from product
-			INNER JOIN "size"
-			on product.size_id = "size".id
-			INNER join brand
-			on product.brand_id = brand.id
-			INNER join color
-			on product.color_id = color.id
-		) prod
+		INNER join vw_product prod prod
 		on prod.id = stock.product_id
 		group BY
 		sales.id,
@@ -132,19 +121,7 @@ func (repo *reportRepository) GetInStockReport() ([]*models.InStockReport, error
 				ro.purchase_order_id = po.id
 				and ro.product_id = po.product_id
 
-			INNER JOIN
-				(
-				SELECT 
-				product.id,
-				'` + repo.prefix + `-' || brand.code || product.id || '-' || "size".code || '-' || color.code as sku,
-				brand.name ||' '|| product.name ||' ('|| "size".name ||', '|| color.name || ')' as name
-				from product
-				INNER JOIN "size"
-				on product.size_id = "size".id
-				INNER join brand
-				on product.brand_id = brand.id
-				INNER join color
-				on product.color_id = color.id) prod
+			INNER JOIN vw_product prod
 			on prod.id = ro.product_id
 			and prod.id = po.product_id
 	`
