@@ -23,7 +23,7 @@ Must have features :
    * Shows a report for ijah to help her analyze and make decision. This report is related to omzet / selling / profit.
 6. Export data report in CSV format
 
-Optionnal features:
+Optional features:
 
 1. import data from CSV/spreadsheet (data migration)
 2. CMS UI for inventory management
@@ -37,6 +37,12 @@ Optionnal features:
 5. In Stock product is available after the Receipt order process.
 6. Purchase order can be completed with one to several receipt order.
 7. Out stock will be counted from sales
+
+## Design
+
+Base on requirements, the structure will be look like this.
+
+![toko ijah](doc/inventory.svg)
 
 ## Stack
 
