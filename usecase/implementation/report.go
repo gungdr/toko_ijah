@@ -25,3 +25,11 @@ func (useCase *reportUseCase) GetInStockReport() []*models.InStockReport {
 	}
 	return report
 }
+
+func (useCase *reportUseCase) GetOutStockReport() []*models.OutStockReport {
+	report, err := useCase.repo.GetOutStockReport()
+	if err != nil {
+		log.Println(err)
+	}
+	return report
+}

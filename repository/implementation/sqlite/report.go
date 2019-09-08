@@ -20,6 +20,45 @@ func NewReportRepository(db *sqlx.DB, prefix string) repository.ReportRepository
 	}
 }
 
+func (repo *reportRepository) GetOutStockReport() ([]*models.OutStockReport, error) {
+	query := `
+		select 
+		sales.date as "time",
+		prod.sku,
+		prod.name as product_name,
+		count(stock.product_id) as qty,
+		avg(sales_detail.price) over(PARTITION by sales.id,sales.date) as price,
+		sum(sales_detail.price) as total,
+		'ID-'|| STRFTIME('%Y%m%d',sales.date) ||'-'||  sales.id as notes
+		from sales_detail
+		inner JOIN sales
+		on sales.id = sales_detail.sales_id
+		inner join stock
+		on stock.id = sales_detail.stock_id
+
+		INNER join (
+			SELECT 
+			product.id,
+			'` + repo.prefix + `-' || brand.code || product.id || '-' || "size".code || '-' || color.code as sku,
+			brand.name ||' '|| product.name ||' ('|| "size".name ||', '|| color.name || ')' as name
+			from product
+			INNER JOIN "size"
+			on product.size_id = "size".id
+			INNER join brand
+			on product.brand_id = brand.id
+			INNER join color
+			on product.color_id = color.id
+		) prod
+		on prod.id = stock.product_id
+		group BY
+		sales.id,
+		sales.date
+	`
+	var report []*models.OutStockReport
+	err := repo.db.Select(&report, query)
+	return report, err
+}
+
 func (repo *reportRepository) GetInStockReport() ([]*models.InStockReport, error) {
 	query := `
 	select

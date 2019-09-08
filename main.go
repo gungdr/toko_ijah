@@ -29,6 +29,7 @@ func main() {
 	reportRoutes := r.Group("/report")
 	{
 		reportRoutes.GET("/in-stock", reportDelivery.GetInStockReport)
+		reportRoutes.GET("/out-stock", reportDelivery.GetOutStockReport)
 	}
 	r.Run(fmt.Sprintf(":%s", htptPort))
 

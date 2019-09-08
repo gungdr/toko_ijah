@@ -24,3 +24,9 @@ func (del *reportDelivery) GetInStockReport(c *gin.Context) {
 	report := del.useCase.GetInStockReport()
 	c.JSON(http.StatusOK, report)
 }
+
+//GetOutStockReport ...
+func (del *reportDelivery) GetOutStockReport(c *gin.Context) {
+	report := del.useCase.GetOutStockReport()
+	c.JSON(http.StatusOK, report)
+}
