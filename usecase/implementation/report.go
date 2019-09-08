@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"log"
 	"toko_ijah/models"
 	"toko_ijah/repository"
 	"toko_ijah/usecase"
@@ -18,7 +19,9 @@ func NewReportUseCase(repo repository.ReportRepository) usecase.ReportUseCase {
 }
 
 func (useCase *reportUseCase) GetInStockReport() []*models.InStockReport {
-	report := useCase.repo.GetInStockReport()
-
+	report, err := useCase.repo.GetInStockReport()
+	if err != nil {
+		log.Println(err)
+	}
 	return report
 }

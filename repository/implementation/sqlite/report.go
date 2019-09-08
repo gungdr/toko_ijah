@@ -1,7 +1,6 @@
 package implementation
 
 import (
-	"log"
 	"toko_ijah/models"
 	"toko_ijah/repository"
 
@@ -21,7 +20,7 @@ func NewReportRepository(db *sqlx.DB, prefix string) repository.ReportRepository
 	}
 }
 
-func (repo *reportRepository) GetInStockReport() []*models.InStockReport {
+func (repo *reportRepository) GetInStockReport() ([]*models.InStockReport, error) {
 	query := `
 	select
 	ro.date as "time",
@@ -85,9 +84,5 @@ on prod.id = ro.product_id
 and prod.id = po.product_id`
 	var report []*models.InStockReport
 	err := repo.db.Select(&report, query)
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-	return report
+	return report, err
 }
