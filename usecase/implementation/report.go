@@ -45,10 +45,7 @@ func (useCase *reportUseCase) GetTotalProductReport() []*models.TotalProductRepo
 
 func (useCase *reportUseCase) GetProductValueReport() *models.ProductValueReportSummary {
 	report, err := useCase.repo.GetProductValueReport()
-	type summaryMap struct {
-		qty   int
-		value float32
-	}
+
 	skuCount := map[string]bool{}
 	qty := 0
 	value := float32(0)
