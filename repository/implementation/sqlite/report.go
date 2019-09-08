@@ -20,6 +20,32 @@ func NewReportRepository(db *sqlx.DB, prefix string) repository.ReportRepository
 	}
 }
 
+func (repo *reportRepository) GetTotalProductReport() ([]*models.TotalProductReport, error) {
+	query := `
+			select
+			vw_product.sku,
+			vw_product.name as product_name,
+			count(stock.product_id) as qty
+			
+			from stock
+			inner join vw_product
+			on vw_product.id = stock.product_id
+			
+			WHERE stock.id not in (
+				SELECT 
+				stock.id
+				from stock
+				inner join sales_detail
+				on sales_detail.stock_id = stock.id
+			)
+
+			GROUP by stock.product_id
+	`
+	var report []*models.TotalProductReport
+	err := repo.db.Select(&report, query)
+	return report, err
+}
+
 func (repo *reportRepository) GetOutStockReport() ([]*models.OutStockReport, error) {
 	query := `
 		select 
@@ -61,66 +87,67 @@ func (repo *reportRepository) GetOutStockReport() ([]*models.OutStockReport, err
 
 func (repo *reportRepository) GetInStockReport() ([]*models.InStockReport, error) {
 	query := `
-	select
-	ro.date as "time",
-	prod.sku as sku,
-	prod.name as product_name,
-	po.order_qty as order_qty,
-	ro.qty as receipt_qty,
-	po.sum_price as order_price,
-	coalesce(ro.receipt_number, '') as receipt_number,
-	coalesce(STRFTIME('%Y/%m/%d',ro.date) ||' terima ' || ro.qty, '' )as notes
-from
-	(
-	select
-		purchase_order.id,
-		purchase_order.date,
-		purchase_order_detail.product_id,
-		count(*) order_qty,
-		purchase_order_detail.price,
-		sum(purchase_order_detail.price) as sum_price
-	from
-		purchase_order
-	INNER join purchase_order_detail on
-		purchase_order.id = purchase_order_detail.purchase_order_id
-	group by
-		purchase_order.date,
-		purchase_order_detail.product_id,
-		purchase_order_detail.price ) po
-inner join (
-	SELECT
-		receipt_order.purchase_order_id,
-		receipt_order.receipt_number,
-		receipt_order.date,
-		receipt_order_detail.product_id,
-		count(*) qty
-	from
-		receipt_order
-	INNER join receipt_order_detail on
-		receipt_order.id = receipt_order_detail.receipt_order_id
-	group by
-		receipt_order.receipt_number,
-		receipt_order.date,
-		receipt_order_detail.product_id,
-		receipt_order.purchase_order_id )ro on
-	ro.purchase_order_id = po.id
-	and ro.product_id = po.product_id
+				select
+				ro.date as "time",
+				prod.sku as sku,
+				prod.name as product_name,
+				po.order_qty as order_qty,
+				ro.qty as receipt_qty,
+				po.sum_price as order_price,
+				coalesce(ro.receipt_number, '') as receipt_number,
+				coalesce(STRFTIME('%Y/%m/%d',ro.date) ||' terima ' || ro.qty, '' )as notes
+			from
+				(
+				select
+					purchase_order.id,
+					purchase_order.date,
+					purchase_order_detail.product_id,
+					count(*) order_qty,
+					purchase_order_detail.price,
+					sum(purchase_order_detail.price) as sum_price
+				from
+					purchase_order
+				INNER join purchase_order_detail on
+					purchase_order.id = purchase_order_detail.purchase_order_id
+				group by
+					purchase_order.date,
+					purchase_order_detail.product_id,
+					purchase_order_detail.price ) po
+			inner join (
+				SELECT
+					receipt_order.purchase_order_id,
+					receipt_order.receipt_number,
+					receipt_order.date,
+					receipt_order_detail.product_id,
+					count(*) qty
+				from
+					receipt_order
+				INNER join receipt_order_detail on
+					receipt_order.id = receipt_order_detail.receipt_order_id
+				group by
+					receipt_order.receipt_number,
+					receipt_order.date,
+					receipt_order_detail.product_id,
+					receipt_order.purchase_order_id )ro on
+				ro.purchase_order_id = po.id
+				and ro.product_id = po.product_id
 
-INNER JOIN
-	(
-	SELECT 
-	product.id,
-	'` + repo.prefix + `-' || brand.code || product.id || '-' || "size".code || '-' || color.code as sku,
-	brand.name ||' '|| product.name ||' ('|| "size".name ||', '|| color.name || ')' as name
-	from product
-	INNER JOIN "size"
-	on product.size_id = "size".id
-	INNER join brand
-	on product.brand_id = brand.id
-	INNER join color
-	on product.color_id = color.id) prod
-on prod.id = ro.product_id
-and prod.id = po.product_id`
+			INNER JOIN
+				(
+				SELECT 
+				product.id,
+				'` + repo.prefix + `-' || brand.code || product.id || '-' || "size".code || '-' || color.code as sku,
+				brand.name ||' '|| product.name ||' ('|| "size".name ||', '|| color.name || ')' as name
+				from product
+				INNER JOIN "size"
+				on product.size_id = "size".id
+				INNER join brand
+				on product.brand_id = brand.id
+				INNER join color
+				on product.color_id = color.id) prod
+			on prod.id = ro.product_id
+			and prod.id = po.product_id
+	`
 	var report []*models.InStockReport
 	err := repo.db.Select(&report, query)
 	return report, err

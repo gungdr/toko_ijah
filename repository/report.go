@@ -6,4 +6,5 @@ import "toko_ijah/models"
 type ReportRepository interface {
 	GetInStockReport() ([]*models.InStockReport, error)
 	GetOutStockReport() ([]*models.OutStockReport, error)
+	GetTotalProductReport() ([]*models.TotalProductReport, error)
 }
