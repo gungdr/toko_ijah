@@ -1,6 +1,9 @@
 package repository
 
-import "toko_ijah/models"
+import (
+	"time"
+	"toko_ijah/models"
+)
 
 //ReportRepository ..
 type ReportRepository interface {
@@ -8,4 +11,5 @@ type ReportRepository interface {
 	GetOutStockReport() ([]*models.OutStockReport, error)
 	GetTotalProductReport() ([]*models.TotalProductReport, error)
 	GetProductValueReport() ([]*models.ProductValueReport, error)
+	GetSalesReport(from, until time.Time) ([]*models.SalesReport, error)
 }

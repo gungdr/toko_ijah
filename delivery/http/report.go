@@ -8,4 +8,5 @@ type ReportDelivery interface {
 	GetOutStockReport(c *gin.Context)
 	GetTotalProductReport(c *gin.Context)
 	GetProductValueReport(c *gin.Context)
+	GetSalesReport(c *gin.Context)
 }

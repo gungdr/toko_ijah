@@ -1,6 +1,9 @@
 package usecase
 
-import "toko_ijah/models"
+import (
+	"time"
+	"toko_ijah/models"
+)
 
 //ReportUseCase ..
 type ReportUseCase interface {
@@ -8,4 +11,5 @@ type ReportUseCase interface {
 	GetOutStockReport() []*models.OutStockReport
 	GetTotalProductReport() []*models.TotalProductReport
 	GetProductValueReport() *models.ProductValueReportSummary
+	GetSalesReport(from, until time.Time) *models.SalesReportSummary
 }
