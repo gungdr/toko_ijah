@@ -6,4 +6,5 @@ import "github.com/gin-gonic/gin"
 type ReportDelivery interface {
 	GetInStockReport(c *gin.Context)
 	GetOutStockReport(c *gin.Context)
+	GetTotalProductReport(c *gin.Context)
 }

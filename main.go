@@ -30,6 +30,7 @@ func main() {
 	{
 		reportRoutes.GET("/in-stock", reportDelivery.GetInStockReport)
 		reportRoutes.GET("/out-stock", reportDelivery.GetOutStockReport)
+		reportRoutes.GET("/total-product", reportDelivery.GetTotalProductReport)
 	}
 	r.Run(fmt.Sprintf(":%s", htptPort))
 

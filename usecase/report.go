@@ -6,4 +6,5 @@ import "toko_ijah/models"
 type ReportUseCase interface {
 	GetInStockReport() []*models.InStockReport
 	GetOutStockReport() []*models.OutStockReport
+	GetTotalProductReport() []*models.TotalProductReport
 }

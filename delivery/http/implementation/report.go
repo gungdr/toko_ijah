@@ -30,3 +30,8 @@ func (del *reportDelivery) GetOutStockReport(c *gin.Context) {
 	report := del.useCase.GetOutStockReport()
 	c.JSON(http.StatusOK, report)
 }
+
+func (del *reportDelivery) GetTotalProductReport(c *gin.Context) {
+	report := del.useCase.GetTotalProductReport()
+	c.JSON(http.StatusOK, report)
+}
