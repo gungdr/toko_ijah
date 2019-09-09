@@ -1,0 +1,8 @@
+
+CREATE TABLE color (
+	id INTEGER NOT NULL PRIMARY KEY,
+	code TEXT (3) NOT NULL,
+	name TEXT(10) NOT NULL,
+	created_on TIMESTAMP NOT NULL,
+	modified_on TIMESTAMP
+);
