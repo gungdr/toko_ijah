@@ -11,22 +11,22 @@ Ijah wants to replace her spreadsheet by creating an application.
 
 Must have features :
 
-1. Catatan Jumlah Barang
+1. Catatan Jumlah Barang [X]
    * Stores actual stock of products
-2. Catatan Barang Masuk
+2. Catatan Barang Masuk [X]
    * Catatan Barang Masuk
-3. Catatan Barang Keluar
+3. Catatan Barang Keluar [X]
    * To store product that will be stored into the inventory.
-4. Laporan Nilai Barang
+4. Laporan Nilai Barang [X]
    * Shows a report for ijah to help her analyze and make decision. This report is related to total inventory value of Toko Ijah.
-5. Laporan Penjualan
+5. Laporan Penjualan [X]
    * Shows a report for ijah to help her analyze and make decision. This report is related to omzet / selling / profit.
-6. Export data report in CSV format
+6. Export data report in CSV format [X]
 
 Optional features:
 
-1. import data from CSV/spreadsheet (data migration)
-2. CMS UI for inventory management
+1. import data from CSV/spreadsheet (data migration) []
+2. CMS UI for inventory management []
 
 ### Assumptions
 
@@ -48,8 +48,88 @@ Base on requirements, the structure will be look like this.
 
 This application is use golang and sqlite.
 
-### Run the application
+## Project structure
+
+this project has 4 main structure
+
+```bash
+models
+repository
+usecase
+delivery
+```
+
+### models
+
+Models is where all the entities are
+
+### repository
+
+Repository connecting app to external service such as `DB` or `REST API`
+
+### usecase
+
+Usecase is place for all business rules
+
+### delivery
+
+Delivery is how we present our data.
+we can serve it as `REST API`, `web`, `GraphQL` etc.
+
+## Available Scripts
 
 ```bash
 make run
 ```
+
+this script is retrieving dependencies, build and run the application
+
+```bash
+make test
+```
+
+this script run the test
+
+```bash
+make dev
+```
+
+this script run the app in dev mode, the app runs without building
+
+```bash
+make clean
+```
+
+this script clean the executable
+
+## Endpoints
+
+> GET    /report/in-stock  (Catatan Barang Masuk)
+>
+> GET    /report/out-stock (Catatan Barang Keluar)
+>
+> GET    /report/total-product (Catatan Jumlah Barang)
+>
+> GET    /report/product-value (Laporan Nilai Barang)
+>
+> GET    /report/sales?from={YYYY-mm-dd}&until={YYYY-mm-dd} (Laporan Penjualan)
+
+All endpoints return json.
+To export data as CSV append `?format=csv` at the end of query string.
+
+```REST
+/report/in-stock?format=csv
+
+/report/sales?from=2019-01-01&until=2018-02-01&format=csv
+```
+
+## TODO
+
+this application is not having a full features, these are the features need to be implemented
+
+1. Implement purchase order transaction process
+2. Implement receive order transaction process
+3. Implement stock opname process
+4. Implement sales transaction process
+5. Implement data migration
+6. CMS UI
