@@ -10,6 +10,7 @@ type InStockReport struct {
 	OrderQty      int       `json:"order_qty,omitempty" db:"order_qty,omitempty"`
 	ReceiptQty    int       `json:"receipt_qty,omitempty" db:"receipt_qty,omitempty"`
 	OrderPrice    float32   `json:"order_price,omitempty" db:"order_price,omitempty"`
+	Total         float32   `json:"total,omitempty" db:"total,omitempty"`
 	ReceiptNumber string    `json:"receipt_number,omitempty" db:"receipt_number,omitempty"`
 	Notes         string    `json:"notes,omitempty" db:"notes,omitempty"`
 }

@@ -146,15 +146,16 @@ func (repo *reportRepository) GetOutStockReport() ([]*models.OutStockReport, err
 
 func (repo *reportRepository) GetInStockReport() ([]*models.InStockReport, error) {
 	query := `
-		select time,
-		sku,
-		product_name,	
-		order_qty,
-		receipt_qty,	
-		order_price,
-		receipt_number,
-		notes
-		from vw_in_stock_report
+	select time,
+	sku,
+	product_name,	
+	order_qty,
+	receipt_qty,	
+	order_price,
+	order_price * order_qty as total,
+	receipt_number,
+	notes
+	from vw_in_stock_report
 	`
 	var report []*models.InStockReport
 	err := repo.db.Select(&report, query)
