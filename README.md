@@ -76,6 +76,20 @@ Usecase is place for all business rules
 Delivery is how we present our data.
 we can serve it as `REST API`, `web`, `GraphQL` etc.
 
+## Running the executable binary
+
+In Linux
+
+```bash
+./start ./toko_ijah_linux
+```
+
+In Mac
+
+```bash
+./start ./toko_ijah_mac
+```
+
 ## Available Scripts
 
 ```bash
@@ -133,3 +147,4 @@ this application is not having a full features, these are the features need to b
 4. Implement sales transaction process
 5. Implement data migration
 6. CMS UI
+7. Create Docker images so it can run anywhere
